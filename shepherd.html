@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shepherd — Letters carried across time</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --sand: #f2ead8;
+    --sand-dark: #e8dcc4;
+    --ink: #2c2416;
+    --ink-light: #6b5c3e;
+    --ink-faint: #a8906a;
+    --moss: #5a6b4a;
+    --rust: #8b4a2a;
+    --cream: #faf6ee;
+    --paper: #f5edd8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* grain texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.6;
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    position: relative;
+  }
+
+  .logo {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-tagline {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 80vh;
+    padding: 0 4rem 4rem;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-text { max-width: 480px; }
+
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--ink-faint);
+  }
+
+  h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--ink-light);
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .cta-row { display: flex; align-items: center; gap: 1.5rem; }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    padding: 0.85rem 2rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--rust); transform: translateY(-1px); }
+
+  .cta-note {
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* DOG ILLUSTRATION AREA */
+  .hero-art {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 420px;
+  }
+
+  .dog-scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* HOW IT WORKS */
+  .how {
+    background: var(--paper);
+    border-top: 1px solid var(--sand-dark);
+    border-bottom: 1px solid var(--sand-dark);
+    padding: 5rem 4rem;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--sand-dark);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+
+  .step-num {
+    font-family: 'Lora', serif;
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .step-title {
+    font-family: 'Lora', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+  }
+
+  .step-body {
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* WRITE SECTION */
+  .write-section {
+    padding: 6rem 4rem;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .write-section h2 {
+    font-family: 'Lora', serif;
+    font-size: 1.8rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+
+  .write-section .subtitle {
+    font-size: 0.95rem;
+    color: var(--ink-faint);
+    font-style: italic;
+    margin-bottom: 2.5rem;
+  }
+
+  .paper-field {
+    background: var(--paper);
+    border: 1px solid var(--sand-dark);
+    width: 100%;
+    min-height: 240px;
+    padding: 1.5rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent 34px,
+      var(--sand-dark) 34px,
+      var(--sand-dark) 35px
+    );
+    background-attachment: local;
+  }
+  .paper-field:focus { border-color: var(--ink-light); }
+  .paper-field::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .field-wrap { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field-wrap label { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
+
+  .text-input {
+    background: var(--paper);
+    border: 1px solid var(--sand-dark);
+    padding: 0.65rem 0.9rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .text-input:focus { border-color: var(--ink-light); }
+
+  .time-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+  }
+  .time-opt {
+    border: 1px solid var(--sand-dark);
+    background: var(--paper);
+    padding: 0.55rem 0;
+    text-align: center;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .time-opt:hover { border-color: var(--ink-light); color: var(--ink); }
+  .time-opt.sel { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .form-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .char-count { font-size: 0.82rem; color: var(--ink-faint); font-style: italic; }
+  .err { font-size: 0.85rem; color: var(--rust); font-style: italic; min-height: 1.2rem; margin-top: 0.5rem; }
+
+  /* CONFIRMATION */
+  .confirm-screen {
+    display: none;
+    padding: 4rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .confirm-screen.show { display: block; }
+
+  .confirm-title {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+  }
+
+  .confirm-sub {
+    font-size: 1rem;
+    color: var(--ink-light);
+    font-style: italic;
+    margin-bottom: 2.5rem;
+  }
+
+  .journey-bar {
+    position: relative;
+    height: 60px;
+    margin: 2rem 0;
+  }
+  .j-line {
+    position: absolute;
+    top: 50%; left: 8%; right: 8%;
+    height: 1px;
+    background: var(--sand-dark);
+    transform: translateY(-50%);
+  }
+  .j-dot {
+    position: absolute;
+    top: 50%;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .j-dot.start { left: 8%; background: var(--ink); }
+  .j-dot.end { right: 8%; background: var(--moss); }
+  .j-dog {
+    position: absolute;
+    top: 50%;
+    font-size: 22px;
+    transform: translateY(-60%);
+    animation: dogrun 10s linear forwards;
+  }
+  @keyframes dogrun { from { left: 10%; } to { left: 86%; } }
+
+  .confirm-detail {
+    background: var(--paper);
+    border: 1px solid var(--sand-dark);
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    margin-top: 1.5rem;
+  }
+  .c-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--sand-dark);
+  }
+  .c-row:last-child { border-bottom: none; }
+  .c-key { color: var(--ink-faint); }
+  .c-val { color: var(--ink); font-weight: 400; }
+  .c-val.green { color: var(--moss); }
+
+  .again-btn {
+    margin-top: 2rem;
+    background: transparent;
+    border: 1px solid var(--sand-dark);
+    padding: 0.75rem 2rem;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+  .again-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--sand-dark);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadein { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .fadein { animation: fadein 0.7s ease forwards; }
+  .fadein-2 { animation: fadein 0.7s 0.15s ease both; }
+  .fadein-3 { animation: fadein 0.7s 0.3s ease both; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.5rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; padding: 2rem 1.5rem; min-height: auto; gap: 2rem; }
+    .hero-art { height: 260px; }
+    .how { padding: 3rem 1.5rem; }
+    .steps { grid-template-columns: 1fr; gap: 2rem; }
+    .write-section { padding: 3rem 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .confirm-screen { padding: 2rem 1.5rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#">Shepherd</a>
+  <span class="nav-tagline">Letters carried across time</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-text fadein">
+    <div class="hero-eyebrow">A postal service unlike any other</div>
+    <h1>Write a letter.<br><em>Let it travel.</em><br>Read it later.</h1>
+    <p class="hero-desc">
+      Write something honest to your future self. A German Shepherd picks it up and carries it across the world — arriving in your inbox exactly when you said.
+    </p>
+    <div class="cta-row">
+      <a href="#write" class="btn-primary">Write your letter</a>
+      <span class="cta-note">Free. No account needed.</span>
+    </div>
+  </div>
+
+  <div class="hero-art fadein-2">
+    <svg viewBox="0 0 460 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+      <!-- sky / ground -->
+      <rect width="460" height="400" fill="#f2ead8" rx="4"/>
+      <!-- hills -->
+      <ellipse cx="80" cy="340" rx="160" ry="60" fill="#ddd5b8"/>
+      <ellipse cx="360" cy="360" rx="180" ry="55" fill="#cfc8ae"/>
+      <ellipse cx="230" cy="380" rx="260" ry="50" fill="#c8bfa0"/>
+      <!-- clouds -->
+      <ellipse cx="80" cy="80" rx="55" ry="22" fill="white" opacity="0.7"/>
+      <ellipse cx="108" cy="72" rx="35" ry="18" fill="white" opacity="0.7"/>
+      <ellipse cx="340" cy="60" rx="45" ry="17" fill="white" opacity="0.65"/>
+      <ellipse cx="365" cy="54" rx="28" ry="14" fill="white" opacity="0.65"/>
+      <!-- path -->
+      <path d="M 20 320 Q 230 270 440 310" stroke="#b8ad90" stroke-width="2" fill="none" stroke-dasharray="6 5"/>
+      <!-- envelope -->
+      <g transform="translate(180, 130)">
+        <rect x="0" y="0" width="100" height="70" rx="2" fill="#faf6ee" stroke="#c8bfa0" stroke-width="1.5"/>
+        <path d="M0 0 L50 38 L100 0" stroke="#c8bfa0" stroke-width="1.5" fill="none"/>
+        <path d="M0 70 L38 40" stroke="#c8bfa0" stroke-width="1" fill="none"/>
+        <path d="M100 70 L62 40" stroke="#c8bfa0" stroke-width="1" fill="none"/>
+        <!-- wax seal -->
+        <circle cx="50" cy="42" r="10" fill="#8b4a2a" opacity="0.85"/>
+        <text x="50" y="46" text-anchor="middle" font-size="9" fill="#f2ead8" font-family="serif">S</text>
+      </g>
+      <!-- german shepherd body -->
+      <g transform="translate(60, 220)">
+        <!-- body -->
+        <ellipse cx="80" cy="60" rx="55" ry="30" fill="#8b7355"/>
+        <!-- darker saddle -->
+        <ellipse cx="80" cy="52" rx="38" ry="20" fill="#5a4a2e"/>
+        <!-- head -->
+        <ellipse cx="140" cy="44" rx="28" ry="22" fill="#8b7355"/>
+        <ellipse cx="145" cy="44" rx="18" ry="16" fill="#7a6445"/>
+        <!-- snout -->
+        <ellipse cx="162" cy="52" rx="14" ry="10" fill="#a08060"/>
+        <ellipse cx="166" cy="50" rx="5" ry="4" fill="#3a2a1a"/>
+        <!-- nose -->
+        <ellipse cx="173" cy="51" rx="4" ry="3" fill="#2c1a0e"/>
+        <!-- ear 1 -->
+        <polygon points="125,28 118,4 140,22" fill="#5a4a2e"/>
+        <!-- ear 2 -->
+        <polygon points="140,25 135,2 152,20" fill="#5a4a2e"/>
+        <!-- eye -->
+        <circle cx="152" cy="40" r="4" fill="#2c1a0e"/>
+        <circle cx="153" cy="39" r="1.2" fill="white"/>
+        <!-- legs -->
+        <rect x="45" y="82" width="14" height="32" rx="6" fill="#7a6445"/>
+        <rect x="65" y="84" width="14" height="30" rx="6" fill="#7a6445"/>
+        <rect x="95" y="82" width="14" height="32" rx="6" fill="#7a6445"/>
+        <rect x="115" y="84" width="14" height="30" rx="6" fill="#7a6445"/>
+        <!-- tail -->
+        <path d="M28 55 Q0 30 10 10" stroke="#5a4a2e" stroke-width="10" stroke-linecap="round" fill="none"/>
+        <!-- little bag/satchel -->
+        <rect x="50" y="48" width="28" height="20" rx="3" fill="#c8a96e" stroke="#a08048" stroke-width="1"/>
+        <line x1="50" y1="54" x2="78" y2="54" stroke="#a08048" stroke-width="0.8"/>
+        <circle cx="64" cy="58" r="3" fill="#8b6a35"/>
+      </g>
+      <!-- small paw prints -->
+      <g fill="#b8ad90" opacity="0.6">
+        <circle cx="240" cy="318" r="3"/>
+        <circle cx="238" cy="311" r="1.5"/>
+        <circle cx="243" cy="311" r="1.5"/>
+        <circle cx="260" cy="312" r="3"/>
+        <circle cx="258" cy="305" r="1.5"/>
+        <circle cx="263" cy="305" r="1.5"/>
+        <circle cx="280" cy="308" r="3"/>
+        <circle cx="278" cy="301" r="1.5"/>
+        <circle cx="283" cy="301" r="1.5"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-label">How it works</div>
+  <div class="steps">
+    <div class="step fadein">
+      <div class="step-num">01 —</div>
+      <div class="step-title">Write something true</div>
+      <p class="step-body">A letter to yourself. Where you are, what you're afraid of, what you hope for. No one else will read it.</p>
+    </div>
+    <div class="step fadein-2">
+      <div class="step-num">02 —</div>
+      <div class="step-title">The dog picks it up</div>
+      <p class="step-body">Choose when it should arrive — one month, six months, a year from now. A German Shepherd sets off carrying your words.</p>
+    </div>
+    <div class="step fadein-3">
+      <div class="step-num">03 —</div>
+      <div class="step-title">It arrives on time</div>
+      <p class="step-body">On the chosen day, your letter lands in your inbox. The subject line reads: <em>"Your letter from the past has arrived."</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- WRITE FORM -->
+<section class="write-section" id="write">
+  <div id="form-area">
+    <h2>Write your letter</h2>
+    <p class="subtitle">No account. No password. Just words and a date.</p>
+
+    <textarea class="paper-field" id="letter" maxlength="2000"
+      placeholder="Dear future me,&#10;&#10;Right now it is April 2026, and I am thinking about..."></textarea>
+    <div style="display:flex;justify-content:space-between;margin-top:0.4rem;">
+      <span class="err" id="err"></span>
+      <span class="char-count"><span id="cc">0</span> / 2000</span>
+    </div>
+
+    <div class="form-row" style="margin-top:1.25rem;">
+      <div class="field-wrap">
+        <label>Your email</label>
+        <input class="text-input" type="email" id="email" placeholder="you@example.com" />
+      </div>
+      <div class="field-wrap">
+        <label>Deliver in</label>
+        <div class="time-grid" id="time-grid">
+          <div class="time-opt" data-d="30">1 month</div>
+          <div class="time-opt" data-d="90">3 months</div>
+          <div class="time-opt sel" data-d="180">6 months</div>
+          <div class="time-opt" data-d="365">1 year</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn-primary" onclick="submitLetter()">Hand it to the dog →</button>
+    </div>
+  </div>
+
+  <div class="confirm-screen" id="confirm">
+    <div class="confirm-title">He's on his way.</div>
+    <p class="confirm-sub">Your letter is packed. The dog has left.</p>
+    <div class="journey-bar">
+      <div class="j-line"></div>
+      <div class="j-dot start"></div>
+      <div class="j-dot end"></div>
+      <div class="j-dog" id="jdog">🐕</div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--ink-faint);font-style:italic;">· · · · · · · · · · · · · · · · · · · · ·</p>
+    <div class="confirm-detail">
+      <div class="c-row"><span class="c-key">Delivering to</span><span class="c-val" id="c-email"></span></div>
+      <div class="c-row"><span class="c-key">Arrives on</span><span class="c-val" id="c-date"></span></div>
+      <div class="c-row"><span class="c-key">Journey length</span><span class="c-val" id="c-days"></span></div>
+      <div class="c-row"><span class="c-key">Status</span><span class="c-val green">On the road</span></div>
+    </div>
+    <p style="font-size:0.85rem;color:var(--ink-faint);font-style:italic;margin-top:1.5rem;">
+      Subject line: <em>"Your letter from the past has arrived 🐾"</em>
+    </p>
+    <button class="again-btn" onclick="resetForm()">Write another letter</button>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Shepherd</span>
+  <span>Free forever &nbsp;·&nbsp; No account needed &nbsp;·&nbsp; Letters delivered with care</span>
+</footer>
+
+<script>
+  let days = 180;
+
+  document.getElementById('letter').addEventListener('input', function() {
+    document.getElementById('cc').textContent = this.value.length;
+  });
+
+  document.querySelectorAll('.time-opt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.time-opt').forEach(b => b.classList.remove('sel'));
+      this.classList.add('sel');
+      days = parseInt(this.dataset.d);
+    });
+  });
+
+  function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+  function formatDate(d) {
+    return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  const SUPABASE_URL = 'https://pydbaxxskltosvauciey.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZGJheHhza2x0b3N2YXVjaWV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4ODI4ODQsImV4cCI6MjA5MjQ1ODg4NH0.j3OeXJuEykZdRCBBiCovmZBsfl6zTQj10UYmbAgB35g';
+
+  async function submitLetter() {
+    const letter = document.getElementById('letter').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const err = document.getElementById('err');
+    const btn = document.querySelector('.btn-primary');
+
+    if (!letter) { err.textContent = 'The dog needs something to carry.'; return; }
+    if (!validEmail(email)) { err.textContent = 'Please enter a valid email address.'; return; }
+    err.textContent = '';
+
+    const arrival = new Date();
+    arrival.setDate(arrival.getDate() + days);
+    const deliverAt = arrival.toISOString().split('T')[0];
+
+    btn.textContent = 'Packing the bag...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/letters`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ email, letter_text: letter, deliver_at: deliverAt })
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(body);
+      }
+
+      document.getElementById('c-email').textContent = email;
+      document.getElementById('c-date').textContent = formatDate(arrival);
+      document.getElementById('c-days').textContent = days === 30 ? '1 month' : days === 90 ? '3 months' : days === 180 ? '6 months' : '1 year';
+
+      document.getElementById('form-area').style.display = 'none';
+      const confirm = document.getElementById('confirm');
+      confirm.classList.add('show');
+
+      const dog = document.getElementById('jdog');
+      dog.style.animation = 'none';
+      void dog.offsetWidth;
+      dog.style.animation = 'dogrun 10s linear forwards';
+
+    } catch (e) {
+      err.textContent = 'Something went wrong. Try again.';
+      console.error(e);
+      btn.textContent = 'Hand it to the dog →';
+      btn.disabled = false;
+    }
+  }
+
+  function resetForm() {
+    document.getElementById('letter').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('cc').textContent = '0';
+    document.getElementById('confirm').classList.remove('show');
+    document.getElementById('form-area').style.display = 'block';
+    days = 180;
+    document.querySelectorAll('.time-opt').forEach(b => b.classList.remove('sel'));
+    document.querySelector('[data-d="180"]').classList.add('sel');
+  }
+</script>
+</body>
+</html>
