@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Shepherd <letters@shepherdmail.com>',
+        from: 'Shepherd <onboarding@resend.dev>',
         to: letter.email,
         subject: 'Your letter from the past has arrived 🐾',
         html: `
